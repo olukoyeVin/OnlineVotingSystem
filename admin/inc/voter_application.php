@@ -69,7 +69,7 @@
     <script>
         function compareData(idNumber, email, placeOfBirth) {
             $.ajax({
-                url: 'compare.php', // PHP script for comparison
+                url: "inc/compare.php", // PHP script for comparison
                 type: 'POST',
                 data: { id_number: idNumber, email: email, place_of_birth: placeOfBirth },
                 success: function(response) {
