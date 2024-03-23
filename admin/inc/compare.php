@@ -11,11 +11,11 @@ if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     $firstName = mysqli_real_escape_string($db, $row['first_name']);
     $contactNumber = mysqli_real_escape_string($db, $row['id_number']);
-    $password = password_hash($idNumber, PASSWORD_DEFAULT); // Hash the ID number as password
-    $photo = mysqli_real_escape_string($db, $row['photo']);
+    $password = mysqli_real_escape_string($db, sha1($idNumber)); // Hash the ID number as password
 
-    $insertQuery = "INSERT INTO `users` (`username`, `contact_no`, `password`, `user_photo`) 
-                    VALUES ('$firstName', '$contactNumber', '$password', '$photo')";
+
+    $insertQuery = "INSERT INTO `users` (`username`, `contact_no`, `password`) 
+                    VALUES ('$firstName', '$contactNumber', '$password')";
 
     if (mysqli_query($db, $insertQuery)) {
         // Insert successful

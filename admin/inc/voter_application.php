@@ -18,7 +18,7 @@
                         <th scope="col">First Name</th>
                         <th scope="col">Last Name</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Photo</th>
+                        <th scope="col">Contact Number</th>
                         <th scope="col">Place of Birth</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -33,19 +33,12 @@
                         $sno = 1;
                         while($row = mysqli_fetch_assoc($fetchingData)) {
                             ?>          
-                            <style>
-                                .user_photo {
-                                    border-radius: 50%;
-                                    width: 50px; /* Adjust the size as needed */
-                                    height: 50px; /* Adjust the size as needed */
-                                }
-                            </style>
                             <tr>
                                 <td><?php echo $row['id_number']; ?></td>
                                 <td><?php echo $row['first_name']; ?></td>
                                 <td><?php echo $row['last_name']; ?></td>
                                 <td><?php echo $row['email']; ?></td>
-                                <td><img src="<?php echo $row['photo']; ?>" class="user_photo" /></td>
+                                <td><?php echo $row['contact_no']; ?></td>
                                 <td><?php echo $row['place_of_birth']; ?></td>
                                 <td>
                                     <button class="btn btn-success" onclick="compareData('<?php echo $row['id_number']; ?>', '<?php echo $row['email']; ?>', '<?php echo $row['place_of_birth']; ?>')">Approve</button>
