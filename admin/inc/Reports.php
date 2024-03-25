@@ -109,7 +109,6 @@ $activeElectionsResult = $db->query($activeElectionsQuery);
 $activeElectionsRow = $activeElectionsResult->fetch_assoc();
 $activeElections = $activeElectionsRow['activeElections'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,6 +119,11 @@ $activeElections = $activeElectionsRow['activeElections'];
 <style>
     body {
         font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
     }
 
     h1 {
@@ -154,6 +158,8 @@ $activeElections = $activeElectionsRow['activeElections'];
     /* Set width for buttons container */
     .button-container {
         width: 100%;
+        text-align: center; /* Center align the button */
+        margin-top: auto; /* Push the button to the bottom */
     }
 
     /* Set width for buttons in each row */
@@ -171,13 +177,20 @@ $activeElections = $activeElectionsRow['activeElections'];
         background-color: #f0f0f0; /* Light gray background */
         border-radius: 5px;
     }
+
+    footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+    }
 </style>
 </head>
 <body>
 <h1>Reports</h1>
-<form method="post">
-    <button type="submit" name="generate_pdf">Voter Application Report</button>
-</form>
 
 <!-- Display Dashboard Information -->
 <div class="chart-container">
@@ -187,6 +200,9 @@ $activeElections = $activeElectionsRow['activeElections'];
     <canvas id="electionsChart" width="200" height="150"></canvas>
 </div>
 
+<form method="post" class="button-container">
+    <button type="submit" name="generate_pdf">Voter Application Report</button>
+</form>
 <script>
     var ctx1 = document.getElementById('votesChart').getContext('2d');
     var votesChart = new Chart(ctx1, {
