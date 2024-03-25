@@ -38,17 +38,17 @@ function generatePdfReport() {
     // Add table headers
     $pdf->SetFont('Arial', 'B', 12);
     $pdf->Cell(30, 10, 'ID Number', 1, 0, 'C');
-    $pdf->Cell(40, 10, 'Email', 1, 0, 'C');
+    $pdf->Cell(70, 10, 'Email', 1, 0, 'C');
     $pdf->Cell(40, 10, 'Place of Birth', 1, 0, 'C');
-    $pdf->Cell(80, 10, 'Contact Number', 1, 1, 'C');
+    $pdf->Cell(50, 10, 'Contact Number', 1, 1, 'C');
 
     // Add table rows
     $pdf->SetFont('Arial', '', 12);
     while ($row = $result->fetch_assoc()) {
         $pdf->Cell(30, 10, $row['id_number'], 1, 0, 'C');
-        $pdf->Cell(40, 10, $row['email'], 1, 0, 'C');
+        $pdf->Cell(70, 10, $row['email'], 1, 0, 'C');
         $pdf->Cell(40, 10, $row['place_of_birth'], 1, 0, 'C');
-        $pdf->Cell(80, 10, $row['contact_no'], 1, 1, 'C');
+        $pdf->Cell(50, 10, $row['contact_no'], 1, 1, 'C');
     }
 
     // "Where to sign" section 
@@ -136,7 +136,7 @@ $activeElections = $activeElectionsRow['activeElections'];
         margin: 5px; /* Add margin around each button */
         padding: 15px; /* Increase padding for larger buttons */
         border: none;
-        background-color: green; /* Set button color to green */
+        background-color: lightgreen; /* Set button color to light blue */
         color: white;
         cursor: pointer;
         border-radius: 5px;
@@ -145,7 +145,7 @@ $activeElections = $activeElectionsRow['activeElections'];
     }
 
     button:hover {
-        background-color: darkgreen;
+        background-color: skyblue;
     }
 
     /* Clearfix for button rows */
@@ -190,7 +190,7 @@ $activeElections = $activeElectionsRow['activeElections'];
 </style>
 </head>
 <body>
-<h1>Reports</h1>
+<h1></h1>
 
 <!-- Display Dashboard Information -->
 <div class="chart-container">
@@ -200,8 +200,25 @@ $activeElections = $activeElectionsRow['activeElections'];
     <canvas id="electionsChart" width="200" height="150"></canvas>
 </div>
 
+<!-- Voting Trends Over Time -->
+<div class="chart-container">
+    <canvas id="votesOverTimeChart" width="200" height="150"></canvas>
+</div>
+
+<!-- Candidate Performance -->
+<div class="chart-container">
+    <canvas id="candidatePerformanceChart" width="200" height="150"></canvas>
+</div>
+
+<!-- Voter Participation -->
+<div class="chart-container">
+    <canvas id="voterParticipationChart" width="200" height="150"></canvas>
+</div>
+
 <form method="post" class="button-container">
     <button type="submit" name="generate_pdf">Voter Application Report</button>
+    <button type="submit" name="generate_pdf">voters</button>
+    <button type="submit" name="generate_pdf">candidates</button>
 </form>
 <script>
     var ctx1 = document.getElementById('votesChart').getContext('2d');
@@ -261,7 +278,101 @@ $activeElections = $activeElectionsRow['activeElections'];
             }
         }
     });
-</script>
 
+    // Voting Trends Over Time
+    var ctx3 = document.getElementById('votesOverTimeChart').getContext('2d');
+    var votesOverTimeChart = new Chart(ctx3, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [{
+                label: 'Votes Over Time',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Disable aspect ratio scaling
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Candidate Performance
+var candidatePerformanceLabels = <?php echo json_encode($candidateNames); ?>;
+var ctx4 = document.getElementById('candidatePerformanceChart').getContext('2d');
+var candidatePerformanceChart = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+        labels: candidatePerformanceLabels,
+        datasets: [{
+            label: 'Performance',
+            data: [50, 50, 80, 20], // Example data, replace with actual performance data
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.5)',
+                'rgba(54, 162, 235, 0.5)',
+                'rgba(255, 206, 86, 0.5)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false, // Disable aspect ratio scaling
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+    // Voter Participation
+    var ctx5 = document.getElementById('voterParticipationChart').getContext('2d');
+    var voterParticipationChart = new Chart(ctx5, {
+        type: 'pie',
+        data: {
+            labels: ['Yes', 'No', 'Maybe'],
+            datasets: [{
+                label: 'Participation',
+                data: [55, 30, 15],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Disable aspect ratio scaling
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Voter Participation'
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>
