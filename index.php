@@ -1,5 +1,6 @@
 <?php 
 require_once("admin/inc/config.php");
+require_once(__DIR__ . '/admin/inc/vendor/autoload.php');
 
 // Update Election Status
 $fetchingElections = mysqli_query($db, "SELECT * FROM elections") OR die(mysqli_error($db));
@@ -63,56 +64,56 @@ if(isset($_POST['sign_up_btn']))
         <?php
     }
 }
-// User Login       
-    else if(isset($_POST['loginBtn']))
+else if(isset($_POST['loginBtn']))
+{
+    $contact_no = mysqli_real_escape_string($db, $_POST['contact_no']);
+    $password = mysqli_real_escape_string($db, sha1($_POST['password']));
+
+    // Query Fetch / SELECT
+    $fetchingData = mysqli_query($db, "SELECT * FROM users WHERE contact_no = '". $contact_no ."'") or die(mysqli_error($db));
+
+    if(mysqli_num_rows($fetchingData) > 0)
     {
-        $contact_no = mysqli_real_escape_string($db, $_POST['contact_no']);
-        $password = mysqli_real_escape_string($db, sha1($_POST['password']));
-        
+        $data = mysqli_fetch_assoc($fetchingData);
 
-        // Query Fetch / SELECT
-        $fetchingData = mysqli_query($db, "SELECT * FROM users WHERE contact_no = '". $contact_no ."'") or die(mysqli_error($db));
-
-        
-        if(mysqli_num_rows($fetchingData) > 0)
+        if($contact_no == $data['contact_no'] AND $password == $data['password'])
         {
-            $data = mysqli_fetch_assoc($fetchingData);
+            // Generate OTP
+            $otp = rand(100000, 999999); // Generate a 6-digit OTP
+            // Store OTP in the database
+            mysqli_query($db, "INSERT INTO otp (contact_no, otp, created_at) VALUES ('$contact_no', '$otp', NOW())") or die(mysqli_error($db));
 
-            if($contact_no == $data['contact_no'] AND $password == $data['password'])
-            {
-                session_start();
-                $_SESSION['user_role'] = $data['user_role'];
-                $_SESSION['username'] = $data['username'];
-                $_SESSION['user_id'] = $data['id'];
-                
-                if($data['user_role'] == "Admin")
-                {
-                    $_SESSION['key'] = "AdminKey";
-            ?>
-                    <script> location.assign("admin/index.php?homepage=1"); </script>
-            <?php
-                }else {
-                    $_SESSION['key'] = "VotersKey";
-            ?>
-                    <script> location.assign("voters/index.php"); </script>
-            <?php
-                }
+            // Send OTP via email
+            $to = $data['email'];
+            $subject = 'Your OTP for Online Voting System';
+            $message = 'Your OTP is: ' . $otp;
+            $headers = 'From: vykvincent@gmail.com' . "\r\n" .
+                    'Reply-To: vykvincent@gmail.com' . "\r\n" .
+                    'X-Mailer: PHP/' . phpversion();
 
-            }else {
-        ?>
-                <script> location.assign("index.php?invalid_access=1"); </script>
-        <?php
+            if (mail($to, $subject, $message, $headers)) {
+                // Redirect to OTP verification page
+                header("Location: otp_verification.php?contact_no=$contact_no");
+                exit;
+            } else {
+                echo 'Message could not be sent.';
             }
 
-
-        }else {
-    ?>
-            <script> location.assign("index.php?sign-up=1&not_registered=1"); </script>
-    <?php
-
         }
-
+        else
+        {
+            ?>
+            <script> location.assign("index.php?invalid_access=1"); </script>
+            <?php
+        }
     }
+    else
+    {
+        ?>
+        <script> location.assign("index.php?sign-up=1&not_registered=1"); </script>
+        <?php
+    }
+}
 ?>
 
 <!DOCTYPE html>

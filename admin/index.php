@@ -34,6 +34,10 @@
     {
         require_once("inc/viewResults.php");
     }
+    else if(isset($_GET['otp_verificationPage']))
+    {
+        require_once("inc/otp_verification.php");
+    }
 ?>
 
 <?php 
