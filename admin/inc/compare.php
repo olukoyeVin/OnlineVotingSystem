@@ -13,9 +13,8 @@ if (mysqli_num_rows($result) > 0) {
     $contactNumber = mysqli_real_escape_string($db, $row['id_number']);
     $password = mysqli_real_escape_string($db, sha1($idNumber)); // Hash the ID number as password
 
-
-    $insertQuery = "INSERT INTO `users` (`username`, `contact_no`, `password`) 
-                    VALUES ('$firstName', '$contactNumber', '$password')";
+    $insertQuery = "INSERT INTO `users` (`username`, `contact_no`, `email`, `password`) 
+                    VALUES ('$firstName', '$contactNumber', '$email', '$password')";
 
     if (mysqli_query($db, $insertQuery)) {
         // Insert successful
@@ -33,6 +32,6 @@ if (mysqli_num_rows($result) > 0) {
         echo 'Error: ' . mysqli_error($db); // Insert failed
     }
 } else {
-    echo 'false'; // Data does not match
+    echo 'User does not exist in the system'; // Data does not match
 }
 ?>
