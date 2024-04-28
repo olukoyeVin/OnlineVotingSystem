@@ -252,7 +252,7 @@ else if(isset($_POST['loginBtn']))
                         if(isset($_GET['registered']))
                         {
                     ?>
-                            <span class="bg-white text-success text-center my-3"> Your account has been created successfully! </span>
+                            <span class="bg-white text-success text-center my-3"> Your application was received successfully! </span>
                     <?php
                         }
                         else if(isset($_GET['invalid']))

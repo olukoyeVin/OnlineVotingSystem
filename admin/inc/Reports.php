@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require 'vendor/autoload.php';
 require_once 'inc/vendor/setasign/fpdf/fpdf.php'; // Include FPDF library
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
